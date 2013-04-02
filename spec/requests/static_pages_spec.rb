@@ -56,7 +56,7 @@ subject { page }
      page.should have_selector 'title', text: full_title('')
      page.should_not have_selector('title', text: '| Home')
     click_link "Sign up now!"
-    page.should have_selector 'title', text: full_title('Sign Up')
+    page.should have_selector 'title', text: full_title('Sign up')
     click_link "sample app"
      page.should have_selector 'title', text: full_title('')
      page.should_not have_selector('title', text: '| Home')
