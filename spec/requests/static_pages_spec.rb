@@ -21,10 +21,39 @@ subject { page }
       let(:user) { FactoryGirl.create(:user) }
       before do
         FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
-        FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
         sign_in user
         visit root_path
       end
+
+      describe "micropost plurization" do
+        it { should have_content('1 micropost') }
+      end
+
+      describe "micropost plurailization 2" do
+        before do
+          FactoryGirl.create(:micropost, user: user, content: "Bar")
+          visit root_path
+        end
+        it {should have_content('2 microposts')}
+      end
+
+      describe "pagination" do
+
+        before(:all) { 
+          29.times { FactoryGirl.create(:micropost, user: user) } 
+          visit root_path
+        }
+        after(:all)  { Micropost.delete_all }
+
+        it { should have_selector('div.pagination') }
+
+        it "should list each micropost" do
+          Micropost.paginate(page: 1).each do |post|
+            page.should have_selector('li', text: "Lorem ipsum")
+          end
+        end
+      end
+
 
       it "should render the user's feed" do
         user.feed.each do |item|
